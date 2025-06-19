@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: giotmauvang
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    container_name: frontend-giotmauvang
+    ports:
+      - "3030:80"
+
+  backend:  # ← sửa từ "   backend:" thành "  backend:"
+    build:
+      context: ./SaveBlood
+      dockerfile: Dockerfile
+    container_name: backend-giotmauvang
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
